@@ -11,34 +11,53 @@ export default function decorate(block) {
     heroContent.appendChild(block.firstElementChild);
   }
 
-  // If no content exists, add default PhonePe Ethics content
-  if (heroContent.children.length === 0) {
-    const title = document.createElement('h1');
-    title.textContent = 'PhonePe Ethics';
-    heroContent.appendChild(title);
+  // Clean up the structure - move buttons out of h1 if they're nested inside
+  const h1 = heroContent.querySelector('h1');
+  if (h1) {
+    // Find any button containers or links inside the h1
+    const buttonsInH1 = h1.querySelectorAll('.button-container, a');
+    const buttonsToMove = [];
 
-    const buttonContainer = document.createElement('div');
-    buttonContainer.classList.add('button-container');
+    buttonsInH1.forEach((element) => {
+      if (element.classList.contains('button-container')) {
+        buttonsToMove.push(element);
+      } else if (element.tagName === 'A') {
+        // Create a button container for standalone links
+        const buttonContainer = document.createElement('div');
+        buttonContainer.classList.add('button-container');
+        element.classList.add('button', 'purple');
+        buttonContainer.appendChild(element.cloneNode(true));
+        buttonsToMove.push(buttonContainer);
+      }
+    });
 
-    const button = document.createElement('a');
-    button.href = '#code-of-conduct';
-    button.textContent = 'Code of Conduct';
-    button.classList.add('button', 'purple');
+    // Remove buttons from h1 and clean up h1 text
+    buttonsInH1.forEach((element) => {
+      if (element.classList.contains('button-container') || element.tagName === 'A') {
+        element.remove();
+      }
+    });
 
-    buttonContainer.appendChild(button);
-    heroContent.appendChild(buttonContainer);
-  } else {
-    // Find and process existing buttons
-    const buttons = heroContent.querySelectorAll('a');
-    buttons.forEach((button) => {
+    // Clean up h1 text content
+    h1.innerHTML = h1.innerHTML.replace(/<div[^>]*>.*?<\/div>/g, '').trim();
+
+    // Add buttons after h1
+    buttonsToMove.forEach((buttonContainer) => {
+      heroContent.appendChild(buttonContainer);
+    });
+  }
+
+  // Process any remaining standalone buttons
+  const standaloneButtons = heroContent.querySelectorAll('a:not(.button)');
+  standaloneButtons.forEach((button) => {
+    if (!button.closest('.button-container')) {
       const buttonContainer = document.createElement('div');
       buttonContainer.classList.add('button-container');
-
       button.classList.add('button', 'purple');
       button.parentNode.insertBefore(buttonContainer, button);
       buttonContainer.appendChild(button);
-    });
-  }
+    }
+  });
 
   block.appendChild(heroContent);
 }
