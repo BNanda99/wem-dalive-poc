@@ -11,16 +11,34 @@ export default function decorate(block) {
     heroContent.appendChild(block.firstElementChild);
   }
 
-  // Find and process the button
-  const buttons = heroContent.querySelectorAll('a');
-  buttons.forEach((button) => {
+  // If no content exists, add default PhonePe Ethics content
+  if (heroContent.children.length === 0) {
+    const title = document.createElement('h1');
+    title.textContent = 'PhonePe Ethics';
+    heroContent.appendChild(title);
+
     const buttonContainer = document.createElement('div');
     buttonContainer.classList.add('button-container');
 
+    const button = document.createElement('a');
+    button.href = '#code-of-conduct';
+    button.textContent = 'Code of Conduct';
     button.classList.add('button', 'purple');
-    button.parentNode.insertBefore(buttonContainer, button);
+
     buttonContainer.appendChild(button);
-  });
+    heroContent.appendChild(buttonContainer);
+  } else {
+    // Find and process existing buttons
+    const buttons = heroContent.querySelectorAll('a');
+    buttons.forEach((button) => {
+      const buttonContainer = document.createElement('div');
+      buttonContainer.classList.add('button-container');
+
+      button.classList.add('button', 'purple');
+      button.parentNode.insertBefore(buttonContainer, button);
+      buttonContainer.appendChild(button);
+    });
+  }
 
   block.appendChild(heroContent);
 }
