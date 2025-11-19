@@ -16,8 +16,8 @@ export default function decorate(block) {
   buttons.forEach((button) => {
     const buttonContainer = document.createElement('div');
     buttonContainer.classList.add('button-container');
-    
-    button.classList.add('button');
+
+    button.classList.add('button', 'purple');
     button.parentNode.insertBefore(buttonContainer, button);
     buttonContainer.appendChild(button);
   });

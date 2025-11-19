@@ -212,6 +212,19 @@ button.secondary {
   color: var(--text-color);
 }
 
+a.button.purple,
+button.purple {
+  background-color: var(--purple-color);
+  color: var(--background-color);
+}
+
+a.button.purple:hover,
+a.button.purple:focus,
+button.purple:hover,
+button.purple:focus {
+  background-color: var(--purple-hover-color);
+}
+
 main img {
   max-width: 100%;
   width: auto;
